@@ -10,20 +10,30 @@ Everything here is synthetic. No real companies, no real people, no real data.
 
 ## Requirements
 
-You need **Node.js 20 LTS** and nothing else global.
+You need **Node.js 20** only. `node -v` must print `v20.x.x`. npm comes with it.
+
+Nothing else: no Python, Docker, Postgres, or `.env`. The nodejs.org LTS button and `OpenJS.NodeJS.LTS` are not Node 20.
 
 **macOS**
 
-1. Install Node 20 LTS — the installer from [nodejs.org](https://nodejs.org) (20.x LTS line), or with nvm: `nvm install 20 && nvm use 20`.
+1. Install the 20.x installer from the [Node previous-releases page](https://nodejs.org/en/about/previous-releases) (or the 20.x downloads), or `nvm install 20 && nvm use 20`.
 2. Verify: `node -v` prints `v20.x.x`.
 
-**Windows (native — no WSL required)**
+**Windows (native)**
 
-1. Install Node 20 LTS — the Windows installer from [nodejs.org](https://nodejs.org) (20.x LTS line), or `winget install OpenJS.NodeJS.LTS`.
-2. Verify in PowerShell or Command Prompt: `node -v` prints `v20.x.x`.
-3. All commands below run as-is in PowerShell. (If you already live in WSL2 that works too — it's optional, not a requirement.)
+1. Same 20.x installer, or `winget install --id OpenJS.NodeJS.20 --exact`.
+2. Close and reopen PowerShell, then `node -v`.
 
-That's the whole toolchain on both platforms — no Deno, no Python, no database server, no global npm packages. Everything else arrives with `npm i`.
+**WSL (Debian/Ubuntu)**
+
+Inside WSL: `nvm install 20 && nvm use 20`, or the NodeSource 20 setup:
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+Clone to `~/xdemo-app`, not `/mnt/c`.
 
 ## Setup
 
@@ -35,7 +45,7 @@ npx prisma db seed
 npm run dev
 ```
 
-Open **http://localhost:43173**.
+Open **http://localhost:43173**. Leave the terminal open. Stop with Ctrl+C.
 
 `npm test` shows **1 failed / 13 passed** on a clean checkout — that red test is a planted product bug used in the guided demo, not your environment. Leave it unless the facilitator points you at it. To reset everything after experimenting, ask the agent to run the `reset-demo-state` skill (or `npm run db:reset`).
 
@@ -195,5 +205,6 @@ decision. Do not change Ledgerly catalog prices.
 
 - **Port 43173 busy** — a previous dev server is still running; stop it or `npm run dev` will fail fast.
 - **Dashboard empty / data looks wrong** — `npm run db:reset` reseeds the book deterministically.
-- **Windows is slow or file-watching flakes** — native Windows is fully supported; if you chose WSL2, keep the clone in the Linux home (not `/mnt/c`). Line endings are pinned to LF by `.gitattributes`, so no autocrlf surprises either way.
+- **Prisma client missing** — if seed says the Prisma client is missing, run `npx prisma generate`, then `npx prisma db seed` again.
+- **Windows / WSL** — native Windows is supported. If you use WSL, clone under the Linux home (`~/xdemo-app`), not `/mnt/c`. Line endings are pinned to LF by `.gitattributes`.
 - **`npm test` is red** — one failure is shipped on purpose (see Setup above). Exactly 1 failed / 13 passed is healthy.
